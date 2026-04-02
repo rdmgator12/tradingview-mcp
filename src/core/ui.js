@@ -287,7 +287,7 @@ export async function findElement({ query, strategy }) {
   return { success: true, query, strategy: strat, count: results?.length || 0, elements: results || [] };
 }
 
-export async function uiEvaluate({ expression }) {
-  const result = await evaluate(expression);
-  return { success: true, result };
-}
+// ui_evaluate REMOVED — unrestricted arbitrary JS execution via CDP.
+// Prompt injection could exfiltrate cookies, localStorage, or make
+// authenticated requests to TradingView's backend.
+// If you need specific page interactions, add a dedicated, scoped tool.

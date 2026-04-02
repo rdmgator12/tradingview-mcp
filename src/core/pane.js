@@ -96,7 +96,7 @@ export async function setLayout({ layout }) {
     throw new Error(`Unknown layout "${layout}". Available layouts:\n${available}`);
   }
 
-  await evaluateAsync(`${CWC}.setLayout('${resolved}')`);
+  await evaluateAsync(`${CWC}.setLayout(${JSON.stringify(resolved)})`);
   await new Promise(r => setTimeout(r, 500));
 
   const state = await list();
@@ -136,8 +136,6 @@ export async function focus({ index }) {
  */
 export async function setSymbol({ index, symbol }) {
   const idx = Number(index);
-  const escaped = symbol.replace(/'/g, "\\'");
-
   // Focus the target pane first
   await focus({ index: idx });
   await new Promise(r => setTimeout(r, 300));
@@ -147,7 +145,7 @@ export async function setSymbol({ index, symbol }) {
     (function() {
       var chart = window.TradingViewApi._activeChartWidgetWV.value();
       return new Promise(function(resolve) {
-        chart.setSymbol('${escaped}', {});
+        chart.setSymbol(${JSON.stringify(symbol)}, {});
         setTimeout(resolve, 500);
       });
     })()
