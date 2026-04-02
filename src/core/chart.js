@@ -33,7 +33,7 @@ export async function setSymbol({ symbol }) {
     (function() {
       var chart = ${CHART_API};
       return new Promise(function(resolve) {
-        chart.setSymbol('${symbol.replace(/'/g, "\\'")}', {});
+        chart.setSymbol(${JSON.stringify(symbol)}, {});
         setTimeout(resolve, 500);
       });
     })()
@@ -46,7 +46,7 @@ export async function setTimeframe({ timeframe }) {
   await evaluate(`
     (function() {
       var chart = ${CHART_API};
-      chart.setResolution('${timeframe.replace(/'/g, "\\'")}', {});
+      chart.setResolution(${JSON.stringify(timeframe)}, {});
     })()
   `);
   const ready = await waitForChartReady(null, timeframe);
@@ -81,7 +81,7 @@ export async function manageIndicator({ action, indicator, entity_id, inputs: in
     await evaluate(`
       (function() {
         var chart = ${CHART_API};
-        chart.createStudy('${indicator.replace(/'/g, "\\'")}', false, false, ${JSON.stringify(inputArr)});
+        chart.createStudy(${JSON.stringify(indicator)}, false, false, ${JSON.stringify(inputArr)});
       })()
     `);
     await new Promise(r => setTimeout(r, 1500));
@@ -93,7 +93,7 @@ export async function manageIndicator({ action, indicator, entity_id, inputs: in
     await evaluate(`
       (function() {
         var chart = ${CHART_API};
-        chart.removeEntity('${entity_id.replace(/'/g, "\\'")}');
+        chart.removeEntity(${JSON.stringify(entity_id)});
       })()
     `);
     return { success: true, action: 'remove', entity_id };

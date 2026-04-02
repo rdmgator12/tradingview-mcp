@@ -13,7 +13,8 @@ export async function captureScreenshot({ region, filename, method } = {}) {
   mkdirSync(SCREENSHOT_DIR, { recursive: true });
 
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
-  const fname = filename || `tv_${region}_${ts}`;
+  const rawName = filename || `tv_${region}_${ts}`;
+  const fname = rawName.replace(/\.\./g, '_').replace(/[\/\\]/g, '_');
   const filePath = join(SCREENSHOT_DIR, `${fname}.png`);
 
   if (method === 'api') {

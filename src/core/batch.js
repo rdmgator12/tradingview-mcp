@@ -23,12 +23,12 @@ export async function batchRun({ symbols, timeframes, action, delay_ms, ohlcv_co
     for (const tf of tfs) {
       const combo = { symbol, timeframe: tf };
       try {
-        if (colPath) await evaluate(`${colPath}.setSymbol('${symbol}')`);
-        else if (apiPath) await evaluate(`${apiPath}.setSymbol('${symbol}')`);
+        if (colPath) await evaluate(`${colPath}.setSymbol(${JSON.stringify(symbol)})`);
+        else if (apiPath) await evaluate(`${apiPath}.setSymbol(${JSON.stringify(symbol)})`);
 
         if (tf) {
-          if (colPath) await evaluate(`${colPath}.setResolution('${tf}')`);
-          else if (apiPath) await evaluate(`${apiPath}.setResolution('${tf}')`);
+          if (colPath) await evaluate(`${colPath}.setResolution(${JSON.stringify(tf)})`);
+          else if (apiPath) await evaluate(`${apiPath}.setResolution(${JSON.stringify(tf)})`);
         }
 
         await waitForChartReady(symbol);
@@ -40,7 +40,8 @@ export async function batchRun({ symbols, timeframes, action, delay_ms, ohlcv_co
           const client = await getClient();
           const { data } = await client.Page.captureScreenshot({ format: 'png' });
           const ts = new Date().toISOString().replace(/[:.]/g, '-');
-          const fname = `batch_${symbol}_${tf || 'default'}_${ts}.png`;
+          const safeSymbol = symbol.replace(/\.\./g, '_').replace(/[\/\\]/g, '_');
+          const fname = `batch_${safeSymbol}_${tf || 'default'}_${ts}.png`;
           const filePath = join(SCREENSHOT_DIR, fname);
           writeFileSync(filePath, Buffer.from(data, 'base64'));
           actionResult = { file_path: filePath };
